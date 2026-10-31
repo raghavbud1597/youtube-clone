@@ -1,10 +1,9 @@
-import React from "react";
 import { AiOutlineSearch, AiOutlineClose } from "react-icons/ai";
 import { TiMicrophone } from "react-icons/ti";
 import { BsYoutube, BsCameraVideo, BsBell } from "react-icons/bs";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoAppsSharp } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const Navbar = () => {
   return (
@@ -29,7 +28,7 @@ const Navbar = () => {
               </div>
               <input
                 type="text"
-                className="w-96 bg-zinc-900 focus:outline-none border-none"
+                className="w-96 bg-zinc-900 focus:outline-hidden border-none"
               />
               <AiOutlineClose className="text-xl cursor-pointer" />
             </div>

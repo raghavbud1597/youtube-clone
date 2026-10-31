@@ -1,4 +1,3 @@
-import React from "react";
 import {
   MdHomeFilled,
   MdOutlineSlowMotionVideo,
@@ -190,4 +189,4 @@ export default function Sidebar() {
       </p>
     </div>
   );
-} 
+}
