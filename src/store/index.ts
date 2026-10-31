@@ -1,34 +1,43 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
-import type { InitialState } from "../Types";
-import { getHomePageVideos } from "./reducers/getHomePageVideos";
+import {
+  configureStore,
+  createListenerMiddleware,
+  isAnyOf,
+} from "@reduxjs/toolkit";
+import videosReducer from "../features/videos/slice";
+import libraryReducer, {
+  clearHistory,
+  recordWatch,
+  toggleDisliked,
+  toggleLiked,
+  toggleSaved,
+  toggleSubscription,
+} from "../features/library/slice";
+import type { LibraryState } from "../features/library/slice";
+import { loadLibrary, saveLibrary } from "../features/library/storage";
 
-const initialState: InitialState = {
-  videos: [],
-  currentPlaying: null,
-  searchTerm: "",
-  searchResults: [],
-  nextPageToken: null,
-  recommendedVideos: [],
-};
+export function createAppStore(library = loadLibrary()) {
+  const persistence = createListenerMiddleware();
+  persistence.startListening({
+    matcher: isAnyOf(
+      clearHistory,
+      recordWatch,
+      toggleDisliked,
+      toggleLiked,
+      toggleSaved,
+      toggleSubscription,
+    ),
+    effect: (_, api) =>
+      saveLibrary((api.getState() as { library: LibraryState }).library),
+  });
+  return configureStore({
+    reducer: { videos: videosReducer, library: libraryReducer },
+    preloadedState: { library },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().prepend(persistence.middleware),
+  });
+}
 
-const YoutubeSlice = createSlice({
-  name: "youtubeApp",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(getHomePageVideos.fulfilled, (state, action) => {
-      state.videos = action.payload.parsedData;
-      state.nextPageToken = action.payload.nextPageToken;
-    });
-  },
-});
-
-
-export const store = configureStore({
-    reducer: {
-        youtubeApp: YoutubeSlice.reducer,
-    }
-})
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export const store = createAppStore();
+export type AppStore = ReturnType<typeof createAppStore>;
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];

@@ -1,25 +1,7 @@
-import { useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
-import { useAppDispatch } from "../store/hooks";
-import { getHomePageVideos } from "../store/reducers/getHomePageVideos";
+import VideoFeed from "../features/videos/components/VideoFeed";
+import { usePageTitle } from "../hooks/usePageTitle";
 
-const Home = () => {
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(getHomePageVideos(false))
-  }, [dispatch]);
-  return (
-    <div className="max-h-screen overflow-hidden">
-      <div style={{ height: "7.5vh" }}>
-        <Navbar />
-      </div>
-      <div className="flex" style={{ height: "92.5vh" }}>
-        <Sidebar />
-      </div>
-    </div>
-  );
-};
-
-export default Home;
+export default function Home() {
+  usePageTitle("Home");
+  return <VideoFeed kind="home" query="reactjs projects" />;
+}

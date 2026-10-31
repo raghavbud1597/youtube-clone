@@ -4,7 +4,6 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // Keep existing .env files working while supporting Vite's variable naming.
   envPrefix: ["VITE_", "REACT_APP_YOUTUBE_DATA_API_KEY"],
   server: {
     port: 3000,

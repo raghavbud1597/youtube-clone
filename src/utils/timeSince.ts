@@ -1,26 +1,19 @@
-export const timeSince = (date: Date) => {
-    const seconds = Math.floor((new Date().valueOf() - date.valueOf()) / 1000);
-  
-    let interval = seconds / 31536000;
-  
-    if (interval > 1) {
-      return Math.floor(interval) + " years";
+export function timeSince(date: string | Date, now = Date.now()): string {
+  const timestamp = new Date(date).getTime();
+  if (!Number.isFinite(timestamp)) return "Unknown date";
+  const seconds = Math.max(0, Math.floor((now - timestamp) / 1000));
+  const units: [string, number][] = [
+    ["year", 31536000],
+    ["month", 2592000],
+    ["day", 86400],
+    ["hour", 3600],
+    ["minute", 60],
+  ];
+  for (const [unit, size] of units) {
+    if (seconds >= size) {
+      const count = Math.floor(seconds / size);
+      return `${count} ${unit}${count === 1 ? "" : "s"} ago`;
     }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return Math.floor(interval) + " months";
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return Math.floor(interval) + " days";
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return Math.floor(interval) + " hours";
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return Math.floor(interval) + " minutes";
-    }
-    return Math.floor(seconds) + " seconds";
-  };
+  }
+  return "Just now";
+}
